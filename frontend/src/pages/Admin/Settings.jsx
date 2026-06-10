@@ -1,6 +1,5 @@
 import React from 'react';
 import {useLocation} from 'react-router-dom';
-import StoreHeader from "../../components/StoreHeader";
 import StoreFooter from "../../components/StoreFooter";
 
 const Settings = () => {

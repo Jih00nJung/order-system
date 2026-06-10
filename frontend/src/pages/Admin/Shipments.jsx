@@ -1,6 +1,5 @@
 import React from 'react';
 import {useNavigate} from 'react-router-dom';
-import SideNav from "../../components/SideNav";
 
 const Shipments = () => {
     const navigate = useNavigate();
