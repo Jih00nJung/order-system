@@ -7,9 +7,9 @@ const Settings = () => {
     const isAdmin = location.pathname.startsWith('/admin');
 
     const content = (
-        <div className="max-w-[800px] mx-auto w-full">
+        <div className="max-w-200 mx-auto w-full">
             <header className="mb-xl">
-                <h2 className="text-display-lg font-display-lg md:font-display-lg font-display-lg-mobile text-on-background">프로필
+                <h2 className="text-display-lg font-display-lg-mobile md:font-display-lg font-display-lg-mobile text-on-background">프로필
                     설정</h2>
                 <p className="text-body-md font-body-md text-on-surface-variant mt-sm">계정의 기본 정보를 확인하고 수정할 수 있습니다.</p>
             </header>
