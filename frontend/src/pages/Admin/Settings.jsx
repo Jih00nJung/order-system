@@ -9,12 +9,12 @@ const Settings = () => {
     const content = (
         <div className="max-w-200 mx-auto w-full">
             <header className="mb-xl">
-                <h2 className="text-display-lg font-display-lg-mobile md:font-display-lg font-display-lg-mobile text-on-background">프로필
+                <h2 className="text-display-lg md:font-display-lg text-on-background">프로필
                     설정</h2>
                 <p className="text-body-md font-body-md text-on-surface-variant mt-sm">계정의 기본 정보를 확인하고 수정할 수 있습니다.</p>
             </header>
             <div
-                className="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-[0_4px_6px_-1px_rgb(0_0_0/0.1),_0_2px_4px_-2px_rgb(0_0_0/0.1)]">
+                className="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-md">
                 <div
                     className="flex flex-col md:flex-row items-start md:items-center gap-xl pb-xl border-b border-outline-variant mb-xl">
                     <div className="relative group cursor-pointer">
@@ -64,7 +64,7 @@ const Settings = () => {
 
     return (
         <div className="flex flex-col min-h-screen">
-            <main className="flex-grow w-full max-w-container-max mx-auto px-lg py-xl custom-scroll">
+            <main className="grow w-full max-w-container-max mx-auto px-lg py-xl custom-scroll">
                 {content}
             </main>
             <StoreFooter/>
