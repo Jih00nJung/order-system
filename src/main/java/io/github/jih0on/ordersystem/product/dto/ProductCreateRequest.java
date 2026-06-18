@@ -1,12 +1,9 @@
 package io.github.jih0on.ordersystem.product.dto;
 
-import lombok.Getter;
-
-@Getter
-public class ProductCreateRequest {
-    private String name;
-    private int price;
-    private int stock;
-    private String description;
-
+public record ProductCreateRequest(
+        String name,
+        int price,
+        int stock,
+        String description
+) {
 }

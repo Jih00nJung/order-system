@@ -1,13 +1,10 @@
 package io.github.jih0on.ordersystem.payment.service;
 
 import io.github.jih0on.ordersystem.order.entity.Order;
-import io.github.jih0on.ordersystem.order.repository.OrderRepository;
 import io.github.jih0on.ordersystem.payment.dto.PaymentCompleteResponse;
-import io.github.jih0on.ordersystem.payment.dto.PaymentCreateRequest;
 import io.github.jih0on.ordersystem.payment.dto.PaymentCreateResponse;
 import io.github.jih0on.ordersystem.payment.entity.Payment;
 import io.github.jih0on.ordersystem.payment.repository.PaymentRepository;
-import io.github.jih0on.ordersystem.product.entity.Product;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

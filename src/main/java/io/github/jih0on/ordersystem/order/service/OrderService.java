@@ -8,7 +8,6 @@ import io.github.jih0on.ordersystem.order.dto.OrderCreateResponse;
 import io.github.jih0on.ordersystem.order.entity.Order;
 import io.github.jih0on.ordersystem.order.entity.OrderItem;
 import io.github.jih0on.ordersystem.order.repository.OrderRepository;
-import io.github.jih0on.ordersystem.payment.entity.Payment;
 import io.github.jih0on.ordersystem.payment.service.PaymentService;
 import io.github.jih0on.ordersystem.product.entity.Product;
 import io.github.jih0on.ordersystem.product.repository.ProductRepository;
@@ -47,19 +46,19 @@ public class OrderService {
                 .status(Order.OrderStatus.CREATED)
                 .build();
 
-        if (request.getItems() == null || request.getItems().isEmpty()) {
+        if (request.items() == null || request.items().isEmpty()) {
             throw new IllegalArgumentException("주문할 상품이 없습니다.");
         }
 
         // 2. 주문 상품 생성 (INSERT)
-        for (OrderCreateRequest.OrderItemRequest itemReq : request.getItems()) {
-            Product product = productRepository.findById(itemReq.getProductId())
+        for (OrderCreateRequest.OrderItemRequest itemReq : request.items()) {
+            Product product = productRepository.findById(itemReq.productId())
                     .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다."));
 
             OrderItem orderItem = OrderItem.builder()
                     .product(product)
                     .order(order)
-                    .cnt(itemReq.getCnt())
+                    .cnt(itemReq.cnt())
                     .price(product.getPrice())
                     .status(OrderItem.OrderItemStatus.ORDERED)
                     .build();
@@ -67,15 +66,15 @@ public class OrderService {
             order.getOrderItems().add(orderItem);
 
             // 3. 재고 감소 (UPDATE)
-            product.removeStock(itemReq.getCnt());
+            product.removeStock(itemReq.cnt());
 
-            totalPrice += (product.getPrice() * itemReq.getCnt());
+            totalPrice += (product.getPrice() * itemReq.cnt());
         }
         order.setTotalPrice(totalPrice);
         orderRepository.save(order);
 
         // 4. 결제 생성
-        paymentService.createPayment(order, request.getPaymentMethod());
+        paymentService.createPayment(order, request.paymentMethod());
 
         return OrderCreateResponse.from(order);
     }
