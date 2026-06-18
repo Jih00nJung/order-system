@@ -17,14 +17,14 @@ public class MemberService {
      */
     public Long register(RegisterRequest request) {
 
-        if (memberRepository.existsByEmail(request.getEmail())) {
+        if (memberRepository.existsByEmail(request.email())) {
             throw new IllegalStateException("이미 가입된 이메일입니다.");
         }
 
         Member member = Member.builder()
-                .email(request.getEmail())
-                .password(request.getPassword())
-                .nickname(request.getNickname())
+                .email(request.email())
+                .password(request.password())
+                .nickname(request.nickname())
                 .emailVerified(false)
                 .build();
 

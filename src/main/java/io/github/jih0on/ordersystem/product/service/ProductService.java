@@ -31,10 +31,10 @@ public class ProductService {
                 .orElseThrow();
 
         Product product = Product.builder()
-                .name(request.getName())
-                .price(request.getPrice())
-                .stock(request.getStock())
-                .description(request.getDescription())
+                .name(request.name())
+                .price(request.price())
+                .stock(request.stock())
+                .description(request.description())
                 .seller(seller)
                 .build();
 

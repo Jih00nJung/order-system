@@ -32,8 +32,8 @@ public class Payment {
     private PaymentStatus status;
 
     @CreatedDate
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
+    @Column(name = "payment_at", updatable = false)
+    private LocalDateTime paymentAt;
 
     @Getter
     public enum PaymentMethod {
