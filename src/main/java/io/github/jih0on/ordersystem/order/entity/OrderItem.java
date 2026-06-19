@@ -36,6 +36,7 @@ public class OrderItem {
     @Enumerated(EnumType.STRING)
     private OrderItemStatus status;
 
+    @Getter
     public enum OrderItemStatus {
         ORDERED("주문됨"),
         CANCELED("주문 취소");
@@ -46,9 +47,6 @@ public class OrderItem {
             this.description = description;
         }
 
-        public String getDescription() {
-            return description;
-        }
     }
 
     public void cancel() {

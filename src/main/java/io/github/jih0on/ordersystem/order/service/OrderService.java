@@ -2,6 +2,7 @@ package io.github.jih0on.ordersystem.order.service;
 
 import io.github.jih0on.ordersystem.member.entity.Member;
 import io.github.jih0on.ordersystem.member.repository.MemberRepository;
+import io.github.jih0on.ordersystem.order.OrderCreatedEvent;
 import io.github.jih0on.ordersystem.order.dto.OrderCancelResponse;
 import io.github.jih0on.ordersystem.order.dto.OrderCreateRequest;
 import io.github.jih0on.ordersystem.order.dto.OrderCreateResponse;
@@ -12,12 +13,15 @@ import io.github.jih0on.ordersystem.payment.service.PaymentService;
 import io.github.jih0on.ordersystem.product.entity.Product;
 import io.github.jih0on.ordersystem.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class OrderService {
+
+    private final ApplicationEventPublisher eventPublisher;
 
     private final OrderRepository orderRepository;
     private final MemberRepository memberRepository;
@@ -52,7 +56,7 @@ public class OrderService {
 
         // 2. 주문 상품 생성 (INSERT)
         for (OrderCreateRequest.OrderItemRequest itemReq : request.items()) {
-            Product product = productRepository.findById(itemReq.productId())
+            Product product = productRepository.findByProductId(itemReq.productId())
                     .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다."));
 
             OrderItem orderItem = OrderItem.builder()
@@ -74,7 +78,12 @@ public class OrderService {
         orderRepository.save(order);
 
         // 4. 결제 생성
-        paymentService.createPayment(order, request.paymentMethod());
+//        기존 서비스 호출 방식
+//        paymentService.createPayment(order, request.paymentMethod());
+
+//        이벤트 발행 방식
+        eventPublisher.publishEvent(new OrderCreatedEvent(
+                order, request.paymentMethod()));
 
         return OrderCreateResponse.from(order);
     }

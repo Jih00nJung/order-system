@@ -4,13 +4,12 @@ import io.github.jih0on.ordersystem.payment.entity.Payment;
 import lombok.Builder;
 import lombok.Getter;
 
-@Getter
 @Builder
-public class PaymentCreateResponse {
-    private Long paymentId;
-    private String paymentMethod;
-    private String status;
-
+public record PaymentCreateResponse(
+        Long paymentId,
+        String paymentMethod,
+        String status
+) {
     public static PaymentCreateResponse from(Payment payment) {
         return PaymentCreateResponse.builder()
                 .paymentId(payment.getPaymentId())

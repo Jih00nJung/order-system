@@ -12,5 +12,6 @@ public record OrderCreateRequest(
     public record OrderItemRequest(
             Long productId,
             int cnt
-    ) {}
+    ) {
+    }
 }

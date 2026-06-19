@@ -1,15 +1,11 @@
-package io.github.jih0on.ordersystem;
+package io.github.jih0on.ordersystem.product.service;
 
 import io.github.jih0on.ordersystem.member.entity.Member;
 import io.github.jih0on.ordersystem.member.repository.MemberRepository;
-import io.github.jih0on.ordersystem.member.service.MemberService;
 import io.github.jih0on.ordersystem.product.entity.Product;
 import io.github.jih0on.ordersystem.product.repository.ProductRepository;
-import io.github.jih0on.ordersystem.product.service.OptimisticLockStockFacade;
-import io.github.jih0on.ordersystem.product.service.ProductService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
