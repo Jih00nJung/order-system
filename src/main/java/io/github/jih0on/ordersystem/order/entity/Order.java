@@ -57,6 +57,27 @@ public class Order {
         }
     }
 
+    /**
+     * 결제 완료 처리
+     */
+    public void paid() {
+        if (!this.status.equals(OrderStatus.CREATED)) {
+            throw new IllegalStateException("주문 생성 상태에서만 주문을 완료할 수 있습니다.");
+        }
+
+        this.status = OrderStatus.PAID;
+    }
+
+    /**
+     * 배송 준비 처리
+     */
+    public void preparing() {
+        if (!this.status.equals(OrderStatus.PAID)) {
+            throw new IllegalStateException("결제 완료 상태에서만 배송 준비할 수 있습니다.");
+        }
+
+        this.status = OrderStatus.PREPARING;
+    }
 
     /**
      * 주문 취소

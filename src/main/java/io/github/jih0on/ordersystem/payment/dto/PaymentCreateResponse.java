@@ -2,7 +2,6 @@ package io.github.jih0on.ordersystem.payment.dto;
 
 import io.github.jih0on.ordersystem.payment.entity.Payment;
 import lombok.Builder;
-import lombok.Getter;
 
 @Builder
 public record PaymentCreateResponse(

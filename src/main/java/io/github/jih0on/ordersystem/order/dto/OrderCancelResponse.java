@@ -2,15 +2,13 @@ package io.github.jih0on.ordersystem.order.dto;
 
 import io.github.jih0on.ordersystem.order.entity.Order;
 import lombok.Builder;
-import lombok.Getter;
 
-@Getter
 @Builder
-public class OrderCancelResponse {
-    private Long orderId;
-    private int totalPrice;
-    private String status;
-
+public record OrderCancelResponse(
+        Long orderId,
+        int totalPrice,
+        String status
+) {
     public static OrderCancelResponse from(Order order) {
         return OrderCancelResponse.builder()
                 .orderId(order.getOrderId())
