@@ -35,6 +35,9 @@ public class Product {
     @Column(name = "view_cnt")
     private int viewCnt;
 
+    @Version
+    private int version;
+
     @CreatedDate
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;

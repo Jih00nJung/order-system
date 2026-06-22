@@ -63,6 +63,7 @@ public class ProductService {
                 .orElseThrow(() -> new IllegalArgumentException("상품이 없습니다."));
 
         product.removeStock(quantity);
+
     }
 
 }

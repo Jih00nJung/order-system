@@ -31,6 +31,9 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     private PaymentStatus status;
 
+    @Version
+    private int version;
+
     @CreatedDate
     @Column(name = "payment_at", updatable = false)
     private LocalDateTime paymentAt;
@@ -65,9 +68,10 @@ public class Payment {
      * 결제 완료
      */
     public void complete() {
-        if (this.status == PaymentStatus.PAID) {
-            throw new IllegalStateException("이미 결제되었습니다.");
+        if (this.status != PaymentStatus.READY) {
+            throw new IllegalStateException("결제 대기 상태에서만 결제를 완료할 수 있습니다.");
         }
+
         this.status = PaymentStatus.PAID;
     }
 
