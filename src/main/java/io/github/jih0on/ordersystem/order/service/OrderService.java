@@ -3,19 +3,23 @@ package io.github.jih0on.ordersystem.order.service;
 import io.github.jih0on.ordersystem.member.entity.Member;
 import io.github.jih0on.ordersystem.member.repository.MemberRepository;
 import io.github.jih0on.ordersystem.order.OrderCreatedEvent;
-import io.github.jih0on.ordersystem.order.dto.OrderCancelResponse;
-import io.github.jih0on.ordersystem.order.dto.OrderCreateRequest;
-import io.github.jih0on.ordersystem.order.dto.OrderCreateResponse;
+import io.github.jih0on.ordersystem.order.dto.*;
 import io.github.jih0on.ordersystem.order.entity.Order;
 import io.github.jih0on.ordersystem.order.entity.OrderItem;
 import io.github.jih0on.ordersystem.order.repository.OrderRepository;
-import io.github.jih0on.ordersystem.payment.service.PaymentService;
+import io.github.jih0on.ordersystem.payment.entity.Payment;
+import io.github.jih0on.ordersystem.payment.repository.PaymentRepository;
 import io.github.jih0on.ordersystem.product.entity.Product;
 import io.github.jih0on.ordersystem.product.repository.ProductRepository;
+import io.github.jih0on.ordersystem.shipping.entity.Shipping;
+import io.github.jih0on.ordersystem.shipping.repository.ShippingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +30,8 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final MemberRepository memberRepository;
     private final ProductRepository productRepository;
-    private final PaymentService paymentService;
+    private final PaymentRepository paymentRepository;
+    private final ShippingRepository shippingRepository;
 
     /**
      * 기능: 주문 생성 <br>
@@ -107,5 +112,39 @@ public class OrderService {
         }
 
         return OrderCancelResponse.from(order);
+    }
+
+    /**
+     * 주문 내역 조회
+     * memberId를 하드코딩으로 1번 사용자 설정해둠
+     * 1. 주문 조회 (SELECT)
+     * 2. 주문 상품 조회 (SELECT)
+     * 3. 배송 조회 (SELECT)
+     */
+    @Transactional(readOnly = true)
+    public List<OrderHistoryResponse> showHistory(OrderHistoryRequest request) {
+
+        Member member = memberRepository.findById(1L)
+                .orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다."));
+
+        // 주문, 주문 상품 조회
+        List<Long> orderIds = request.orders().stream()
+                .map(req -> req.order().getOrderId())
+                .toList();
+
+        List<Order> orders = orderRepository.findOrderAndItemsById(orderIds);
+
+        List<OrderHistoryResponse> responseList = new ArrayList<>();
+
+        for (Order order : orders) {
+            Payment payment = paymentRepository.findByOrder_OrderId(order.getOrderId())
+                    .orElse(null);
+            Shipping shipping = shippingRepository.findByOrder_OrderId(order.getOrderId())
+                    .orElse(null);
+
+            OrderHistoryResponse dto = OrderHistoryResponse.from(order, payment, shipping);
+            responseList.add(dto);
+        }
+        return responseList;
     }
 }

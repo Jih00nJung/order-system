@@ -1,13 +1,14 @@
 package io.github.jih0on.ordersystem.order.controller;
 
-import io.github.jih0on.ordersystem.order.dto.OrderCancelResponse;
-import io.github.jih0on.ordersystem.order.dto.OrderCreateRequest;
-import io.github.jih0on.ordersystem.order.dto.OrderCreateResponse;
+import io.github.jih0on.ordersystem.order.dto.*;
+import io.github.jih0on.ordersystem.order.service.OrderFacade;
 import io.github.jih0on.ordersystem.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/order")
@@ -15,12 +16,13 @@ import org.springframework.web.bind.annotation.*;
 public class OrderController {
 
     private final OrderService orderService;
+    private final OrderFacade orderFacade;
 
     // 주문 생성
-    @PostMapping("/create")
+    @PostMapping("/")
     public ResponseEntity<OrderCreateResponse> createOrder(
             @RequestBody OrderCreateRequest request) {
-        OrderCreateResponse orderId = orderService.createOrder(request);
+        OrderCreateResponse orderId = orderFacade.createOrder(request);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(orderId);
@@ -33,5 +35,13 @@ public class OrderController {
 
         OrderCancelResponse response = orderService.cancelOrder(orderId);
         return ResponseEntity.ok(response);
+    }
+
+    // 주문 내역 확인
+    @GetMapping("/history")
+    public List<OrderHistoryResponse> getOrderHistory(
+            @RequestBody OrderHistoryRequest request) {
+
+        return orderService.showHistory(request);
     }
 }

@@ -44,10 +44,15 @@ public class PaymentService {
         // 1. 결제 완료
         Payment payment = paymentRepository.findById(paymentId)
                 .orElseThrow(() -> new IllegalArgumentException("결제 내역이 없습니다."));
+
+        if (payment.getStatus() == Payment.PaymentStatus.PAID) {
+            return PaymentCompleteResponse.from(payment);
+        }
         payment.complete();
+        payment.getOrder().paid();
 
         // 2. 결제 완료 이벤트 발행
-        eventPublisher.publishEvent(new PaymentCompletedEvent(payment.getOrder()));
+        eventPublisher.publishEvent(new PaymentCompletedEvent(payment.getOrder().getOrderId()));
 
         return PaymentCompleteResponse.from(payment);
     }
