@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.event.RecordApplicationEvents;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.UUID;
@@ -60,8 +59,8 @@ public class PaymentServiceTest {
         // 전체 삭제(deleteAll) 대신, 테스트에서 생성한 데이터만 정확하게 삭제합니다.
         // Shipping은 Payment Complete 시점에 생성되었으므로, 해당 Order에 연결된 Shipping을 모두 찾아서 지웁니다.
         if (testOrder != null) {
-            List<Shipping> shippings = shippingRepository.findAll();
-            for (Shipping shipping : shippings) {
+            List<Shipping> shipments = shippingRepository.findAll();
+            for (Shipping shipping : shipments) {
                 if (shipping.getOrder().getOrderId().equals(testOrder.getOrderId())) {
                     shippingRepository.delete(shipping);
                 }
@@ -87,7 +86,7 @@ public class PaymentServiceTest {
         testMember = memberRepository.save(Member.builder()
                 .nickname("tester")
                 .password("1234")
-                .email(UUID.randomUUID().toString() + "@test.com")
+                .email(UUID.randomUUID() + "@test.com")
                 .emailVerified(true)
                 .build());
 
@@ -123,13 +122,13 @@ public class PaymentServiceTest {
         System.out.println("getStatus: " + updatedPayment.getStatus());
 
         // 2) 배송 엔티티가 정상적으로 1건 생성되었는지 검증
-        List<Shipping> shippings = shippingRepository.findAll();
-        long shippingCount = shippings.stream()
+        List<Shipping> shipments = shippingRepository.findAll();
+        long shippingCount = shipments.stream()
                 .filter(s -> s.getOrder().getOrderId().equals(testOrder.getOrderId()))
                 .count();
         assertThat(shippingCount).isEqualTo(1);
         
-        Shipping createdShipping = shippings.stream()
+        Shipping createdShipping = shipments.stream()
                 .filter(s -> s.getOrder().getOrderId().equals(testOrder.getOrderId()))
                 .findFirst()
                 .orElseThrow();

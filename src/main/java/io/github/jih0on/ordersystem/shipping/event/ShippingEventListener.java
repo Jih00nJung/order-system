@@ -18,6 +18,6 @@ public class ShippingEventListener {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void handlePaymentCompleted(PaymentCompletedEvent event) {
-        shippingService.createShipping(event.order());
+        shippingService.createShipping(event.orderId());
     }
 }

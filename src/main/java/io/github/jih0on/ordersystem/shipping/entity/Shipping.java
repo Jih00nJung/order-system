@@ -18,13 +18,15 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "shipping")
+@Table(name = "shipping", uniqueConstraints = {
+        @UniqueConstraint(name = "uk_shipping_order_id", columnNames = "order_id")
+})
 public class Shipping {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long shippingId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;
 
