@@ -51,7 +51,7 @@ public class PaymentService {
         payment.complete();
         payment.getOrder().paid();
 
-        // 2. 결제 완료 이벤트 발행
+        // 2. 결제 완료 이벤트 발행 - 배송 생성 목적
         eventPublisher.publishEvent(new PaymentCompletedEvent(payment.getOrder().getOrderId()));
 
         return PaymentCompleteResponse.from(payment);

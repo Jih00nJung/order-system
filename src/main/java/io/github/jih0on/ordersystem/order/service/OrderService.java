@@ -34,6 +34,66 @@ public class OrderService {
     private final ShippingRepository shippingRepository;
 
     /**
+     * 비관적 락 테스트용 주문 생성
+     */
+    @Transactional
+    public OrderCreateResponse createOrderWithPessimisticLock(OrderCreateRequest request) {
+        int totalPrice = 0;
+
+        Member member = memberRepository.findById(1L)
+                .orElseThrow(() -> new IllegalArgumentException("회원정보를 찾을 수 없습니다."));
+
+        // 1. 주문 생성
+        Order order = Order.builder()
+                .member(member)
+                .status(Order.OrderStatus.CREATED)
+                .build();
+
+        if (request.items() == null || request.items().isEmpty()) {
+            throw new IllegalArgumentException("주문할 상품이 없습니다.");
+        }
+
+        // 2. 주문 상품 생성 (INSERT)
+        for (OrderCreateRequest.OrderItemRequest itemReq : request.items()) {
+            Product product = productRepository.findWithPessimisticLockByProductId(itemReq.productId())
+                    .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다."));
+
+            OrderItem orderItem = OrderItem.builder()
+                    .product(product)
+                    .order(order)
+                    .cnt(itemReq.cnt())
+                    .price(product.getPrice())
+                    .status(OrderItem.OrderItemStatus.ORDERED)
+                    .build();
+
+            order.getOrderItems().add(orderItem);
+
+            // 결제 API 예상 소요시간
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+
+            // 3. 재고 감소 (UPDATE)
+            product.removeStock(itemReq.cnt());
+
+            totalPrice += (product.getPrice() * itemReq.cnt());
+        }
+        order.setTotalPrice(totalPrice);
+        orderRepository.save(order);
+
+        // 4. 결제 생성 이벤트
+        eventPublisher.publishEvent(new OrderCreatedEvent(
+                order, request.paymentMethod()));
+
+        return OrderCreateResponse.from(order);
+    }
+    // 비관적 락 테스트
+
+
+
+    /**
      * 기능: 주문 생성 <br>
      * memberId를 하드코딩으로 1번 사용자 설정해둠
      * 나중에 JWT 설정할 때 변경할 것 <br>
@@ -73,6 +133,13 @@ public class OrderService {
                     .build();
 
             order.getOrderItems().add(orderItem);
+
+            // 결제 API 예상 소요시간
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
 
             // 3. 재고 감소 (UPDATE)
             product.removeStock(itemReq.cnt());

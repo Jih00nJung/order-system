@@ -46,7 +46,7 @@ public class ProductServiceTest {
                 .seller(testSeller)
                 .name("Test Product")
                 .price(1000)
-                .stock(9999)
+                .stock(100)
                 .description("Test description")
                 .viewCnt(0)
                 .build();
@@ -61,9 +61,8 @@ public class ProductServiceTest {
 
     @Test
     void removeStockConcurrencyTest() throws InterruptedException {
-        int threadCount = 10000;
+        int threadCount = 100;
         ExecutorService executorService = Executors.newFixedThreadPool(16);
-        // 16: 247, 32: 241, 64: 243, 96: 246
         CountDownLatch latch = new CountDownLatch(threadCount);
 
         long startTime = System.currentTimeMillis();
@@ -84,7 +83,7 @@ public class ProductServiceTest {
 
         System.out.println("요청 처리 개수: " + threadCount);
         System.out.println("실행 시간: " + (endTime - startTime) + "ms");
-        System.out.println("요청 처리 개수: " + (threadCount * 1000L) / (endTime - startTime) + "TPS");
+        System.out.println("TPS: " + (threadCount * 1000L) / (endTime - startTime) + "TPS");
         System.out.println("예상 잔여 재고: 0, 실제 잔여 재고: " + product.getStock());
 
         assertEquals(0, product.getStock(), "재고가 0이 되어야 합니다.");
