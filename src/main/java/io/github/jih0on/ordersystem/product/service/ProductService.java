@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -52,6 +54,16 @@ public class ProductService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 상품을 찾을 수 없습니다."));
 
         return ProductResponse.from(product);
+    }
+
+    /**
+     * 기능: 전체 상품 조회
+     */
+    public List<ProductResponse> getAllProduct() {
+        return productRepository.findAll()
+                .stream()
+                .map(ProductResponse::from)
+                .toList();
     }
 
     /**

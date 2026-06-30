@@ -89,9 +89,6 @@ public class OrderService {
 
         return OrderCreateResponse.from(order);
     }
-    // 비관적 락 테스트
-
-
 
     /**
      * 기능: 주문 생성 <br>
@@ -189,17 +186,13 @@ public class OrderService {
      * 3. 배송 조회 (SELECT)
      */
     @Transactional(readOnly = true)
-    public List<OrderHistoryResponse> showHistory(OrderHistoryRequest request) {
+    public List<OrderHistoryResponse> showHistory(Long memberId) {
 
         Member member = memberRepository.findById(1L)
                 .orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다."));
 
         // 주문, 주문 상품 조회
-        List<Long> orderIds = request.orders().stream()
-                .map(req -> req.order().getOrderId())
-                .toList();
-
-        List<Order> orders = orderRepository.findOrderAndItemsById(orderIds);
+        List<Order> orders = orderRepository.findOrdersWithItemsByMemberId(memberId);
 
         List<OrderHistoryResponse> responseList = new ArrayList<>();
 

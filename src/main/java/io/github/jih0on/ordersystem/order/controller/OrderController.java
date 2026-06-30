@@ -1,6 +1,7 @@
 package io.github.jih0on.ordersystem.order.controller;
 
 import io.github.jih0on.ordersystem.order.dto.*;
+import io.github.jih0on.ordersystem.order.entity.Order;
 import io.github.jih0on.ordersystem.order.service.OrderFacade;
 import io.github.jih0on.ordersystem.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -40,8 +41,8 @@ public class OrderController {
     // 주문 내역 확인
     @GetMapping("/history")
     public List<OrderHistoryResponse> getOrderHistory(
-            @RequestBody OrderHistoryRequest request) {
+            @RequestParam Long memberId) {
 
-        return orderService.showHistory(request);
+        return orderService.showHistory(memberId);
     }
 }
