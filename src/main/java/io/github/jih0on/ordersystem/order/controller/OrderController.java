@@ -1,7 +1,6 @@
 package io.github.jih0on.ordersystem.order.controller;
 
 import io.github.jih0on.ordersystem.order.dto.*;
-import io.github.jih0on.ordersystem.order.entity.Order;
 import io.github.jih0on.ordersystem.order.service.OrderFacade;
 import io.github.jih0on.ordersystem.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
